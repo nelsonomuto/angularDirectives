@@ -1,0 +1,25 @@
+@import '../../../less/main.less';
+
+@nonactiveBreadCrumbColor: #6E6F70;
+@activeBreadCrumbColor: #24428D;
+@breadCrumbFont: 12px Myriad Pro;
+
+.AppBreadCrumb {
+  .headerBar;
+  width: inherit;
+  font-weight: normal;
+  font: @defaultFont;
+  position: relative;
+  padding: 4px 21px;
+
+  .nonActiveBreadCrumb {
+    color: @nonactiveBreadCrumbColor;
+    font: @breadCrumbFont;
+  }
+
+  .activeBreadCrumb {
+    color: @activeBreadCrumbColor;
+    font: @breadCrumbFont;
+    font-weight: bold;
+  }
+}

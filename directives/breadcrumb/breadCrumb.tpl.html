@@ -1,0 +1,10 @@
+<div class="AppBreadCrumb">
+    <a ng-repeat="previousState in previousBreadCrumbStates" class="nonActiveBreadCrumb" href="#{{ previousState.url }}">
+        {{ previousState.crumb }}
+    </a>
+
+    <span id="currentBreadCrumb" class="activeBreadCrumb">
+        {{ currentBreadCrumbState.crumb }}  
+    </span>
+    <div id="chat"></div>
+</div>
