@@ -11,10 +11,10 @@
             }
         },
         {
-            customValidationAttribute: 'validationConfirmPassword', //TODO: Refactor this to validation-field-depends-on
-            errorMessage: 'Passwords do not match. Please re-enter Confirm Password.',
+            customValidationAttribute: 'validationConfirmPassword',
+            errorMessage: 'Passwords do not match.',
             validator: function (val, attr, element, model, ctrl){
-                return model.password === element.val();
+                return model.password.trimRight() === element.val().trimRight();
             }
         },
         {
@@ -127,13 +127,14 @@
                 errorMessageElement = angular.element(
                     '<span data-custom-validation-priorityIndex='+ getValidationPriorityIndex(formatterArgs.customValidationAttribute) +
                     ' data-custom-validation-attribute='+ formatterArgs.customValidationAttribute +
+                    ' data-custom-field-name='+ $element.attr('name') +
                     ' class="CustomValidationError '+ formatterArgs.customValidationAttribute + ' '+ propertyName +'property">' +
                     errorMessage + '</span>');
                 
                 $element.after(errorMessageElement);
                 errorMessageElement.hide();
                 
-                if(formatterArgs.customValidationAttribute === 'validationNoSpace'){
+                if (formatterArgs.customValidationAttribute === 'validationNoSpace') {
                     $element.keyup(function (event){
                         if (event.keyCode === 8) {
                             model[propertyName] = ($element.val().trimRight());
@@ -141,24 +142,42 @@
                     });
                 }
 
-                if(formatterArgs.customValidationAttribute === 'validationConfirmPassword'){
-                    $element.add('[name=password]').keyup(function () {
-                        var passwordMatch =  $('[name=password]').val() === $element.val();
-                        $scope.$apply(function () {
-                           ngModelController.$setValidity(formatterArgs.customValidationAttribute.toLowerCase(), passwordMatch); 
-                           $('[name=confirmPassword]')
-                                .siblings('.CustomValidationError.validationConfirmPassword:first')
-                                    .toggle(! passwordMatch);
-                            runCustomValidations();
-                        });
+                if (formatterArgs.customValidationAttribute === 'validationConfirmPassword') {
+                    $element.add('[name=password]').on('keyup blur', function (){
+                        var passwordMatch, confirmPasswordElement, passwordElement, confirmPasswordIsDirty, passwordIsValid;     
+
+                        confirmPasswordElement = 
+                            this.name === 'confirmPassword'? angular.element(this) : angular.element(this).siblings('[name=confirmPassword]'); 
+
+                        passwordElement = confirmPasswordElement.siblings('[name=password]');
+
+                        confirmPasswordIsDirty = /dirty/.test(confirmPasswordElement.attr('class'));
+                        passwordIsValid = /invalid/.test(passwordElement.attr('class')) === false;
+
+                        if(confirmPasswordIsDirty && passwordIsValid){
+                            passwordMatch =  $('[name=password]').val() === $element.val();                        
+
+                            $scope.$apply(function () {
+                                ngModelController.$setValidity('validationconfirmpassword', passwordMatch); 
+                                   confirmPasswordElement
+                                    .siblings('.CustomValidationError.validationConfirmPassword:first')
+                                        .toggle(! passwordMatch);                                              
+                            });
+                        }                        
                     });
+                    return;
                 }
 
                 runCustomValidations = function () {
                     var isValid, value, customValidationBroadcastArg, currentlyDisplayingAnErrorMessage, currentErrorMessage, currentErrorMessageIsStale,
-                        currentErrorMessageValidator, currentErrorMessagePriorityIndex, currentErrorMessageIsOfALowerPriority;
+                        currentErrorMessageValidator, currentErrorMessagePriorityIndex, currentErrorMessageIsOfALowerPriority, fieldNameSelector;
 
-                    currentErrorMessage = $element.siblings('.CustomValidationError[style="display: inline;"], .CustomValidationError[style="display: block;"]');
+                    fieldNameSelector = '[data-custom-field-name="'+ $element.attr('name') +'"]';
+
+                    currentErrorMessage = 
+                        $element.siblings('.CustomValidationError[style="display: inline;"]'+fieldNameSelector+', '+
+                            '.CustomValidationError[style="display: block;"]'+fieldNameSelector);
+
                     currentlyDisplayingAnErrorMessage = currentErrorMessage.length > 0;
 
                     value = $element.val();
