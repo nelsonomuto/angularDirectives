@@ -28,7 +28,7 @@
             customValidationAttribute: 'validationNoSpace',
             errorMessage: 'Cannot contain any spaces',
             validator: function (val){
-                return (/^[^\s]+$/).test(val.trimRight());
+                return (/^[^\s]+$/).test(val);
             }
         },
         {
@@ -180,7 +180,7 @@
 
                     currentlyDisplayingAnErrorMessage = currentErrorMessage.length > 0;
 
-                    value = $element.val();
+                    value = $element.val().trimRight();
 
                     isValid = formatterArgs.validator(value, $attrs[formatterArgs.customValidationAttribute], $element, model, ngModelController);
 
