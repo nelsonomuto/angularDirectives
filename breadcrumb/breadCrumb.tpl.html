@@ -1,0 +1,13 @@
+<div class="AppBreadCrumb">
+    <a ng-repeat="previousState in previousBreadCrumbStates" class="breadcrumb nonActiveBreadCrumb" href="#{{ previousState.url }}">
+        {{ previousState.data.crumb }}
+    </a>
+
+    <span id="currentBreadCrumb" class="breadcrumb activeBreadCrumb">
+        {{ currentBreadCrumbState.data.crumb }}  
+    </span>
+    
+    <app-chat>
+        <img src="assets/images/livechatbutton1.png" alt='Click for Live Chat'>
+    </app-chat>
+</div>

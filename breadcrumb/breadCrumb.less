@@ -1,0 +1,32 @@
+@import '../../../less/main.less';
+
+@nonactiveBreadCrumbColor: #6E6F70;
+@activeBreadCrumbColor: #24428D;
+@breadCrumbFont: 10pt Myriad;
+
+.AppBreadCrumb {
+
+  .headerBar;
+  width: inherit;
+  font-weight: normal;
+  font: @defaultFont;
+  position: relative;
+  padding: 4px 21px;
+
+  .nonActiveBreadCrumb {
+    color: @nonactiveBreadCrumbColor;
+    font-family: Myriad !important;
+    font-size:10pt !important;
+  }
+
+  .activeBreadCrumb {
+    color: @activeBreadCrumbColor;
+    font-weight: norma !important;
+    font-family: Myriad !important;
+    font-size:10pt !important;
+  }
+  
+ .chat-link {
+    .pull-right;
+ }
+}

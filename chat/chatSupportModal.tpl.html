@@ -1,0 +1,21 @@
+<div class="support-modal-container border-pod">
+    <div class="modal-header page-title border-pod-top">
+        <h2 class="pull-left">The Ambulatory Portal Support Center</h2>
+        <button class="pull-right" ng-click="close()">Close Window</button>
+    </div>
+    <div class="modal-body border-pod-side">
+        <label for="support-areas" id="support-areas-label">Please select an issue area you'd like to discuss:</label>
+        <select id="support-areas" class="input-large" ng-model="supportArea" ng-options="area.productName for area in supportAreas">
+        </select><br/>
+        <!--<button class="btn btn-primary" ng-click="submit()">Submit</button>-->
+        <iframe src="{{supportArea.chatURL}}" id="support-iframe" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
+        </iframe>
+    </div>
+    <div class="page-title border-pod-bottom" style="height:5px;"></div> 
+    <div class="modal-footer footer">
+        <div class="footer-inner">
+            <img class="pull-right" src="assets/images/logo.png">
+            <p class="clearfix">Copyright 2013 RelayHealth. All Rights Reserved.</p>
+        </div>
+    </div>
+</div>
