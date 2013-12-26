@@ -73,8 +73,11 @@ angular.module('directives.breadcrumb.breadCrumb', [
         } else {
             name = state.name;
             while(parentState = getParentState(name)){
-                url = parentState.url + url;
+                url = parentState.name !== '' ? parentState.url + url : url;
                 name = name.substring(0, name.lastIndexOf(parentState.name));
+                if(name.indexOf('.') === -1){
+                    break;
+                }
             }
         }
 

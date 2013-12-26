@@ -77,7 +77,57 @@ describe('directives.breadcrumb.breadCrumb', function () {
         expect('#' + firstState.url + secondState.url).toEqual(angular.element(previousLinks[1]).attr('href')); 
     });
 
-    
+    xit('should NOT have any parent states when configured to ignore parents', function (){
+        var previousLinks;
+        inject(function ($injector, $compile, $rootScope) {
+            scope = $rootScope;
+            $state = $injector.get('$state');
+
+            currentState = {
+                name: 'currentState',
+                url: '/current',
+                data: {
+                    crumb: 'Current State Crumb2'
+                }
+            };
+
+            $state.current = currentState;
+
+            firstState = {
+                name: 'first',
+                url: '/firstStateUrl2',
+                data: {
+                    crumb: 'state uno' 
+                } 
+            };
+
+            secondState = {
+                name: 'second',
+                url: '/secondStateUrl2',
+                data: {
+                    crumb: 'state dos'
+                }
+            };
+            element = angular.element('<app-bread-crumb></app-bread-crumb>');
+            $state.$current = {
+                path: [
+                    {
+                        self: firstState
+                    },
+                    {
+                        self: secondState
+                    },
+                    {
+                        self: currentState
+                    }                        
+                ]
+            };
+            $compile(element)(scope);
+            scope.$digest();
+        });     
+        previousLinks = element.find('a.breadcrumb');
+        expect(previousLinks.length).toEqual(0);
+    });
 
     describe('Template', function (){
         it('should include the arrow before the crumb in each link but the home link', function (){
