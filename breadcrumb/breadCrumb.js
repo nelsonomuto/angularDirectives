@@ -61,16 +61,32 @@ angular.module('directives.breadcrumb.breadCrumb', [
     };
 
     getUrl = function (state, index, paths) {
-        var url, parentUrl;
+        var url, parentUrl, name, parentState;
 
         url = state.url;
 
-        while(index > 0){                            
-            parentUrl = paths[--index].self.url;         
-            url = parentUrl ? parentUrl + url : url;
+        if(typeof(index) !== 'undefined' && typeof(paths) !== 'undefined'){
+            while(index > 0){                            
+                parentUrl = paths[--index].self.url;         
+                url = parentUrl ? parentUrl + url : url;
+            }
+        } else {
+            name = state.name;
+            while(parentState = getParentState(name)){
+                url = parentState.url + url;
+                name = name.substring(0, name.lastIndexOf(parentState.name));
+            }
         }
 
         return url;
+    };
+
+    getParentState = function (name) {
+        var lastIndex;
+
+        if(lastIndex = name.lastIndexOf('.')){
+            return $state.get(name.substring(0, lastIndex));
+        }
     };
 
     return {
@@ -101,7 +117,11 @@ angular.module('directives.breadcrumb.breadCrumb', [
 
                 if (scope.currentBreadCrumbState.data.crumbHierarchy && scope.currentBreadCrumbState.data.crumbHierarchy.length > 0) {
                     angular.forEach(scope.currentBreadCrumbState.data.crumbHierarchy, function (stateName) {
-                        parentStates.push($state.get(stateName));
+                        var stateWithModifiedUrl;
+
+                        stateWithModifiedUrl = angular.copy($state.get(stateName)); 
+                        stateWithModifiedUrl.url = getUrl(stateWithModifiedUrl);  
+                        parentStates.push(stateWithModifiedUrl);
                     });
                 } else {
                     angular.forEach($state.$current.path, function (path, index) {

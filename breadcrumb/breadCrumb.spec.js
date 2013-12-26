@@ -326,7 +326,7 @@ describe('directives.breadcrumb.breadCrumb', function () {
             expect(element.find('span').html().trim()).toEqual("&gt; Current State Crumb2");   
         });
     });
-    it('should build parent link urls by appending parent urls', function (){
+    it('should build child link urls by appending parent urls', function (){
        var previousLinks;
        inject(function ($injector, $compile, $rootScope) {
             scope = $rootScope;
@@ -359,7 +359,7 @@ describe('directives.breadcrumb.breadCrumb', function () {
             $state.$current = {
                 path: [
                     {
-                    self: firstState
+                        self: firstState
                     },
                     {
                         self: secondState
@@ -379,7 +379,62 @@ describe('directives.breadcrumb.breadCrumb', function () {
         expect(element.find('span').html().trim()).toEqual("&gt; Current State Crumb2");  
 
         expect('#'+ firstState.url + secondState.url).toEqual(angular.element(previousLinks[0]).attr('href'));
-    });        
+    });     
+    it('should build child link urls by appending parent urls even when using explicit crumbHierarchy', function (){
+       var previousLinks;
+       inject(function ($injector, $compile, $rootScope) {
+            scope = $rootScope;
+            $state = $injector.get('$state');
+            
+            currentState = {
+                name: 'second.currentState',
+                url: '/current',
+                data: {
+                    crumb: 'Current State Crumb2',
+                    crumbHierarchy: ['second']
+                }
+                
+            };
+
+            firstState = {
+                name: 'first',
+                url: '/firstStateUrl2',
+                abstract: true
+            };
+            
+            secondState = {
+                name: 'first.second',
+                data: {
+                    pageTitle: 'pageTitle'
+                },
+                url: '/secondStateUrl2'
+            };
+
+            $state.current = currentState;
+            $state.$current = {
+                path: [
+                    {
+                        self: firstState
+                    },
+                    {
+                        self: secondState
+                    },
+                    {
+                        self: currentState
+                    }                      
+                ]
+            };
+            $compile(element)(scope);
+            scope.$digest();
+        });
+        
+        previousLinks = element.find('a');
+        expect(element.find('a').length).toEqual(1); 
+        expect(secondState.data.pageTitle).toEqual(angular.element(previousLinks[0]).html().trim());
+        expect(element.find('span').html().trim()).toEqual("&gt; Current State Crumb2");  
+
+        expect('#'+ firstState.url + secondState.url).toEqual(angular.element(previousLinks[0]).attr('href'));
+    });         
     it('should not show abstract breadcrumbs', function (){
        var previousLinks;
        inject(function ($injector, $compile, $rootScope) {
